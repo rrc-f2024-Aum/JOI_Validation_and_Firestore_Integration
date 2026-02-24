@@ -46,11 +46,19 @@ export const eventSchemas = {
             location: Joi.string().optional().allow('')
 
         })
-    }    
-
-
+    },   
 
     // GET - single event by id
+    getById: {
+        params: Joi.object({
+            id: Joi.string().pattern(/^evt_\d{6}$/).required().messages({
+                'string.pattern.base': '"id" must be in format evt_000001',
+                'any.required': '"id" is required'
+            })
+        })
+    },
+
+    
     // PUT - update event by id
     // DELETE - delete event by id
 }
