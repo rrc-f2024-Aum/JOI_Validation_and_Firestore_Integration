@@ -104,8 +104,15 @@ export const eventSchemas = {
             description: Joi.string().optional().allow(''),
             location: Joi.string().optional().allow('')
         })
-    }
+    },
 
     // DELETE - delete event by id
-    
+    delete: {
+        params: Joi.object({
+            id: Joi.string().pattern(/^evt_\d{6}$/).required().messages({
+                'string.pattern.base': '"id" must be in format evt_000001',
+                'any.required': '"id" is required'
+            })
+        })
+    }
 }
