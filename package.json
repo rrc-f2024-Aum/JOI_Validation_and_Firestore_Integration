@@ -12,7 +12,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
-
   },
   "repository": {
     "type": "git",
@@ -27,19 +26,19 @@
   "homepage": "https://github.com/rrc-f2024-Aum/JOI_Validation_and_Firestore_Integration#readme",
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.3.0",
     "@types/jest": "30.0.0",
-    "@types/supertest":"6.0.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
-    "jest":"30.2.0",
+    "@types/node": "^25.3.0",
+    "@types/supertest": "6.0.3",
+    "jest": "30.2.0",
+    "supertest": "7.2.2",
     "ts-jest": "29.4.6",
-    "supertest": "7.2.2"
-    
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "express": "^5.2.1",
     "firebase": "^12.9.0",
+    "firebase-admin": "^13.6.1",
     "joi": "^18.0.2",
     "morgan": "^1.10.1"
   }
