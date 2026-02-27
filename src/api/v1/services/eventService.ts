@@ -1,6 +1,15 @@
 import { Event } from "../models/eventModel";
 import * as firestoreRepository from "../repositories/firestoreRepository";
 
+// health check
+export const getHealthStatus = () => {
+    return {
+        status: "Ok",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        version: "1.0.0"
+    }
+}
 const COLLECTION_NAME = "events";
 
 // create event
