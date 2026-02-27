@@ -1,50 +1,101 @@
 import { db } from "../../../../config/firebaseConfig";
-import { DocumentReference } from "firebase-admin/firestore";
 
-const addDocument = async (): Promise<void> => {
-    const docRef: DocumentReference = db.collection("users").doc("user1");
+export const createDocument = async <T>(
+  collectionName: string,
+  data: Partial<T>,
+  id?: string,
+): Promise<string> => {
 
-    await docRef.set({
-        name: "John Doe",
-        email: "john@example.com",
-        age: 30,
-    });
-    console.log("Document added");
-};
+  try {
+    let docRef: FirebaseFirestore.DocumentReference;
 
-const getDocument = async (): Promise<void> => {
-    
-    const docRef: DocumentReference = db.collection("users").doc("user1");
-    const doc = await docRef.get();
-
-    if (doc.exists) {
-        console.log("Document data:", doc.data());
+    if (id) {
+      docRef = db.collection(collectionName).doc(id);
+      await docRef.set(data);
     } else {
-        console.log("No such document!");
+      docRef = await db.collection(collectionName).add(data);
     }
+
+    return docRef.id;
+
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to create document in ${collectionName}: ${errorMessage}`,
+    );
+  }
 };
 
-const getCollection = async (): Promise<void> => {
+export const getDocumentById = async (
+  collectionName: string,
+  id: string,
+): Promise<FirebaseFirestore.DocumentSnapshot | null> => {
 
-    const snapshot: QuerySnapshot = await db.collection("users").get();
-    snapshot.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
-    });
+  try {
+    const doc: FirebaseFirestore.DocumentSnapshot = await db
+      .collection(collectionName)
+      .doc(id)
+      .get();
+
+    return doc?.exists ? doc : null;
+
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to fetch document ${id} from ${collectionName}: ${errorMessage}`,
+    );
+  }
 };
 
-const updateDocument = async (): Promise<void> => {
+export const getDocuments = async (
+  collectionName: string,
+): Promise<FirebaseFirestore.QuerySnapshot> => {
 
-    const docRef: DocumentReference = db.collection("users").doc("user1");
-    await docRef.update({
-        age: 31,
-    });
+  try {
+    return await db.collection(collectionName).get();
+
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to fetch documents from ${collectionName}: ${errorMessage}`,
+    );
+  }
+};
+
+export const updateDocument = async <T>(
+  collectionName: string,
+  id: string,
+  data: Partial<T>,
+): Promise<void> => {
+
+  try {
+    await db.collection(collectionName).doc(id).update(data);
+
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to update document ${id} in ${collectionName}: ${errorMessage}`,
+    );
+  }
+};
+
+export const deleteDocument = async (
+  collectionName: string,
+  id: string,
+): Promise<void> => {
+
+  try {
+    await db.collection(collectionName).doc(id).delete();
     
-    console.log("Document updated");
-};
-
-const deleteDocument = async (): Promise<void> => {
-    const docRef: DocumentReference = db.collection("users").doc("user1");
-    await docRef.delete();
-
-    console.log("Document deleted");
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to delete document ${id} from ${collectionName}: ${errorMessage}`,
+    );
+  }
 };
