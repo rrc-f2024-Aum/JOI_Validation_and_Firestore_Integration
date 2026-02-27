@@ -63,6 +63,23 @@ export const getEventByID = async (id: string): Promise<Event | null> => {
     }
 }
 
-
 // update event by ID
+export const updatedEvent = async (
+    id: string,
+    eventData: Partial<Event>
+): Promise<void> => {
+    try {
+        await firestoreRepository.updateDocument<Event>(
+            COLLECTION_NAME,
+            id,
+            eventData
+        );
+    
+    } catch (error: unknown) {
+        const errorMessage = 
+            error instanceof Error ? error.message: "Unknown error";
+        throw new Error(`Failed to update event ${id}: ${errorMessage}`);
+    }
+}
+
 // delete event by ID
