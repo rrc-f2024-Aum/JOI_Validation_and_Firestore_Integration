@@ -29,6 +29,11 @@ const validateEventExists = async(id: string, res: Response): Promise<any | null
     return event;
 };
 
+export const checkHealth = (req: Request, res: Response): void => {
+    const healthData = eventService.getHealthStatus();
+    res.json(healthData);
+}
+
 export const createEventHandler = async (
     req: Request, res: Response, next: NextFunction
 ): Promise<void> => {
