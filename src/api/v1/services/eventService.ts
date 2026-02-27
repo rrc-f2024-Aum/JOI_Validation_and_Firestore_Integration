@@ -40,8 +40,29 @@ export const getAllEvents = async(): Promise<Event[]> => {
             error instanceof Error ? error.message: "Unknown error";
         throw new Error(`Failed to fetch events: ${errorMessage}`);
     }
-
 }
+
 // get event by ID
+export const getEventByID = async (id: string): Promise<Event | null> => {
+    try {
+        const doc = await firestoreRepository.getDocumentById(COLLECTION_NAME, id);
+
+        if (!doc) {
+            return null;
+        }
+
+        return {
+            id: doc.id,
+            ...doc.data()
+        } as Event;
+    
+    } catch (error: unknown) {
+        const errorMessage = 
+            error instanceof Error ? error.message: "Unknown Error";
+        throw new Error(`Failed to fetch event ${id}: ${errorMessage}`);
+    }
+}
+
+
 // update event by ID
 // delete event by ID
