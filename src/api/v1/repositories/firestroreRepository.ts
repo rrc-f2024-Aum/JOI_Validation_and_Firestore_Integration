@@ -38,5 +38,13 @@ const updateDocument = async (): Promise<void> => {
     await docRef.update({
         age: 31,
     });
+    
     console.log("Document updated");
+};
+
+const deleteDocument = async (): Promise<void> => {
+    const docRef: DocumentReference = db.collection("users").doc("user1");
+    await docRef.delete();
+
+    console.log("Document deleted");
 };
