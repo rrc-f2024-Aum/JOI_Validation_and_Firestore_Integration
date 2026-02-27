@@ -11,3 +11,15 @@ const addDocument = async (): Promise<void> => {
     });
     console.log("Document added");
 };
+
+const getDocument = async (): Promise<void> => {
+    
+    const docRef: DocumentReference = db.collection("users").doc("user1");
+    const doc = await docRef.get();
+
+    if (doc.exists) {
+        console.log("Document data:", doc.data());
+    } else {
+        console.log("No such document!");
+    }
+};
