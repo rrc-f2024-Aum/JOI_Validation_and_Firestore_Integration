@@ -38,3 +38,5 @@ router.get("/:id",
     validateRequest(eventSchemas.getById),
     eventController.deleteEventHandler
 );
+
+export default router;
