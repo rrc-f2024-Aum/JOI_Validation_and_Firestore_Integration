@@ -114,5 +114,17 @@ export const eventSchemas = {
                 'any.required': '"id" is required'
             })
         })
+    },
+
+    // GET - displays all events
+    list: {
+        query: Joi.object({
+            status: Joi.string().valid('active', 'cancelled', 'completed').optional(),
+            category: Joi.string().valid('conference', 'workshop', 'meetup', 'seminar', 'general').optional(),
+            page: Joi.number().integer().min(1).default(1),
+            limit: Joi.number().integer().min(1).max(100).default(10),
+            sortBy: Joi.string().valid('date', 'name', 'capacity', 'createdAt').default('date'),
+            sortOrder: Joi.string().valid('asc', 'desc').default('asc')
+        })
     }
-}
+};
