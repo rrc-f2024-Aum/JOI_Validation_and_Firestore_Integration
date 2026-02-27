@@ -31,3 +31,12 @@ const getCollection = async (): Promise<void> => {
         console.log(doc.id, "=>", doc.data());
     });
 };
+
+const updateDocument = async (): Promise<void> => {
+
+    const docRef: DocumentReference = db.collection("users").doc("user1");
+    await docRef.update({
+        age: 31,
+    });
+    console.log("Document updated");
+};
