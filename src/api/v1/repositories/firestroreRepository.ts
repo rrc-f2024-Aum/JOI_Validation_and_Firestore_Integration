@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { DocumentReference } from "firebase-admin/firestore";
 
 const addDocument = async (): Promise<void> => {
@@ -22,4 +22,12 @@ const getDocument = async (): Promise<void> => {
     } else {
         console.log("No such document!");
     }
+};
+
+const getCollection = async (): Promise<void> => {
+
+    const snapshot: QuerySnapshot = await db.collection("users").get();
+    snapshot.forEach((doc) => {
+        console.log(doc.id, "=>", doc.data());
+    });
 };
