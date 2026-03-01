@@ -16,9 +16,35 @@ const COLLECTION_NAME = "events";
 export const createEvent = async(eventData: Partial<Event>): Promise<string> => {
    
     try {
+        const snapshot = await firestoreRepository.getDocuments(COLLECTION_NAME);
+
+        let nextId = "evt_000001";
+        if (!snapshot.empty) {
+            const ids: number[] = [];
+            snapshot.forEach(doc => {
+                const match = doc.id.match(/evt_(\d+)/);
+                if (match) {
+                    ids.push(parseInt(match[1], 10));
+                }
+            });
+
+            if (ids.length > 0) {
+                const maxId = Math.max(...ids);
+                const nextNumber = maxId + 1;
+                nextId = `evt_${nextNumber.toString().padStart(6,"0")}`;
+            }
+        }
+
+        const eventDataWithTime = {
+            ...eventData,
+            createdAt: new Date(),
+            updatedEvent: new Date()
+        }
+
         const eventId = await firestoreRepository.createDocument<Event>(
             COLLECTION_NAME, 
-            eventData
+            eventDataWithTime,
+            nextId
         );
 
         return eventId;
