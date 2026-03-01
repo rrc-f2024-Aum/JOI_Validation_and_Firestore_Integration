@@ -4,6 +4,7 @@ export interface Event {
     description?: string,
     date: string,
     capacity: number,
+    registrationCount?: number;
     status?: 'active' | 'cancelled' | 'completed',
     category?: string,
     location?: string,
