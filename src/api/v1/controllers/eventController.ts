@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as eventService from "../services/eventService";
 import { successResponse, errorResponse } from "../models/responseModel";
-import { HTTP_STATUS } from "src/constants/httpsConstants";
+import { HTTP_STATUS } from "../../../constants/httpsConstants";
 
 const validateId = (req: Request, res: Response): string | null => {
     const { id } = req.params;
