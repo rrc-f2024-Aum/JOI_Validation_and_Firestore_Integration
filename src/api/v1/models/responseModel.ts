@@ -1,25 +1,25 @@
 export interface ApiResponse<T> {
-    status: string,
     data?: T,
     message?: string,
+    count?: number,
     error?: string,
     code?: string
 }
 
 export const successResponse = <T>(
     data?: T,
-    message?: string
+    message?: string,
+    count?: number
 ): ApiResponse<T> => ({
-    status: "success",
+    message,
+    count,
     data,
-    message
 });
 
 export const errorResponse = <T>(
     error: string,
     code?: string
 ): ApiResponse<null> => ({
-    status: "error",
-    error,
+    message: error,
     code
 });
