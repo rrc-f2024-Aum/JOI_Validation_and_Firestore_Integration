@@ -7,13 +7,13 @@ export const eventSchemas = {
         body: Joi.object({
 
             name: Joi.string().min(3).required().messages({
-                'string.min': '"name" length must be atl east 3 characters long',
+                'string.min': '"name" length must be at least 3 characters long',
                 'any.required': '"name" is required',
                 'string.empty': '"name" cannot be empty'
             }),
 
             date: Joi.date().iso().greater('now').required().messages({
-                'date.greater': '"date" must be greater than current date and time',
+                'date.greater': '"date" must be greater than "now"',
                 'date.iso': '"date" must be valid ISO 8601 date string',
                 'any.required': '"date" is required'
             }),
@@ -30,7 +30,7 @@ export const eventSchemas = {
                     'number.base': '"registrationCount" must be a number',
                     'number.integer': '"registrationCount" must be a integer',
                     'number.min': '"registrationCount" must be greater than or equal to 0',
-                    'number.max': '"registrationCount" must be less than or equal to capacity'
+                    'number.max': '"registrationCount" must be less than or equal to ref:capacity'
             }),
             
             status: Joi.string().valid('active', 'cancelled', 'completed').optional().messages({

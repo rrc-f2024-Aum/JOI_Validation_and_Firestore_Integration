@@ -42,7 +42,7 @@ export const validateRequest = (
 
                 if (error) {
                     errors.push(...error.details.map(
-                        (detail) => `${partName}: ${detail.message}`
+                        (detail) => detail.message
                     ));
                 } else if (shouldStrip) {
                     return value;
@@ -65,7 +65,7 @@ export const validateRequest = (
                     req.params,
                     "Params",
                     defaultOptions.stripParams
-                );
+                ) as any;
             }
 
             if (schemas.query) {
@@ -77,23 +77,24 @@ export const validateRequest = (
                 );
 
                 if (validatedQuery !== req.query) {
-                    Object.assign(req.query, validatedQuery);
+                    Object.assign(req.query, validatePart) as any;
                 }
             }
 
             if (errors.length > 0) {
                 return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                    error: `Validation error: ${errors.join(",")}`
+                    message: `Validation error: ${errors.join(", ")}`
                 });
             }
 
-            next();
+            return next();
 
         } catch (error: unknown) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({
-                error: (error as Error).message
+                message: (error as Error).message
             });
         }
 
     }
 }
+
