@@ -36,7 +36,7 @@ router.put("/events/:id",
 
 // DELETE - remove event
 router.delete("/events/:id",
-    validateRequest(eventSchemas.getById),
+    validateRequest(eventSchemas.delete),
     eventController.deleteEventHandler
 );
 
