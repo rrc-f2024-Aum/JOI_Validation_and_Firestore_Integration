@@ -57,7 +57,7 @@ export const getAllEventsHandler = async (
         const events = await eventService.getAllEvents();
 
         res.status(HTTP_STATUS.OK).json(
-            successResponse(events, "Events retrieved")
+            successResponse(events, "Events retrieved", events.length)
         );
     
     } catch (error: unknown) {
