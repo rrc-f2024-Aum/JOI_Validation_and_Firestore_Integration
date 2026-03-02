@@ -10,11 +10,37 @@ export const getHealthStatus = () => {
         version: "1.0.0"
     }
 }
+
 const COLLECTION_NAME = "events";
+
+// helper function to formate firestore data 
+const formatEventData = (doc: FirebaseFirestore.DocumentSnapshot): Event => {
+    const data = doc.data()!;
+
+    const formatDate = (dateValue: any): string => {
+        if (dateValue && typeof dateValue === 'object' && '_seconds' in dateValue) {
+            return new Date(dateValue._seconds * 1000).toISOString();
+        }
+
+        return dateValue ? new Date(dateValue).toISOString(): new Date().toISOString();
+    }
+    return {
+        id: doc.id,
+        name: data.name,
+        date: formatDate(data.date),
+        capacity: data.capacity,
+        registrationCount: data.registrationCount ?? 0,
+        status: data.status ?? 'active',
+        category: data.category ?? 'general',
+        description: data.description,
+        location: data.location,
+        createdAt: formatDate(data.createdAt),
+        updatedAt: formatDate(data.updatedAt)
+    } as Event;
+};
 
 // create event
 export const createEvent = async(eventData: Partial<Event>): Promise<string> => {
-   
     try {
         const snapshot = await firestoreRepository.getDocuments(COLLECTION_NAME);
 
@@ -35,10 +61,15 @@ export const createEvent = async(eventData: Partial<Event>): Promise<string> => 
             }
         }
 
+        const now = new Date().toISOString();
         const eventDataWithTime = {
             ...eventData,
-            createdAt: new Date(),
-            updatedEvent: new Date()
+            date: eventData.date ? new Date(eventData.date).toISOString(): undefined,
+            registrationCount: eventData.registrationCount ?? 0,
+            status: eventData.status ?? 'active',
+            category: eventData.category ?? 'general',
+            createdAt: now,
+            updatedAt: now
         }
 
         const eventId = await firestoreRepository.createDocument<Event>(
@@ -63,10 +94,7 @@ export const getAllEvents = async(): Promise<Event[]> => {
 
         const events: Event[] = [];
         snapshot.forEach((doc) => {
-            events.push({
-                id: doc.id,
-                ...doc.data()
-            } as Event);
+            events.push(formatEventData(doc));
         });
 
         return events;
@@ -86,10 +114,7 @@ export const getEventByID = async (id: string): Promise<Event | null> => {
             return null;
         }
 
-        return {
-            id: doc.id,
-            ...doc.data()
-        } as Event;
+        return formatEventData(doc);
     
     } catch (error: unknown) {
         const errorMessage = 
