@@ -60,7 +60,7 @@ export const validateRequest = (
             }
 
             if (schemas.params) {
-                req.query = validatePart(
+                req.params = validatePart(
                     schemas.params,
                     req.params,
                     "Params",
