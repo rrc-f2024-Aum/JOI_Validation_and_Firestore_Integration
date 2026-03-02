@@ -8,6 +8,6 @@ export interface Event {
     status?: 'active' | 'cancelled' | 'completed',
     category?: string,
     location?: string,
-    createdAt?: Date,
-    updatedAt?: Date
+    createdAt?: string,
+    updatedAt?: string
 }
