@@ -2,9 +2,9 @@ import express from "express";
 import { validateRequest } from "../middleware/validate";
 import * as eventController from "../controllers/eventController";
 import { eventSchemas } from "../validations/eventSchemas";
-//import { getHealthStatus } from "../services/eventService";
 
 const router = express.Router();
+
 /**
 * @openapi
  * /health:
