@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/rrc-f2024-Aum/JOI_Validation_and_Firestore_Integration#readme",
   "devDependencies": {
+    "@redocly/cli": "^2.25.2",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.0",
@@ -36,10 +37,15 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.6.1",
+    "helmet": "^8.1.0",
     "joi": "^18.0.2",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
