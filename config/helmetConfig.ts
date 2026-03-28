@@ -9,6 +9,8 @@ export const getHelmetConfig = () => {
         contentSecurityPolicy: false, // Disable for JSON APIs
         hidePoweredBy: true, // Always hide server info
         noSniff: true, // Always prevent MIME sniffing
+        originAgentCluster: true, // separates origin to its own process for security
+        xssFilter: true// Enables header protection for older browsers.
     };
 
     if (isDevelopment) {
