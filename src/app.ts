@@ -1,6 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config
+
 import express from "express";
 import morgan from "morgan";
 import eventRoutes from "./api/v1/routes/eventRoutes";
+
+
 
 // Initialize Express application
 const app = express();
