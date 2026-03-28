@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { getHelmetConfig } from "../config/helmetConfig";
 import { getCorsOptions } from "../config/corsConfig";
+import setupSwagger from "../config/swagger";
 import morgan from "morgan";
 import eventRoutes from "./api/v1/routes/eventRoutes";
 
@@ -19,6 +20,8 @@ app.use(cors(getCorsOptions()));
 
 app.use(morgan("combined"));
 app.use(express.json());
+
+setupSwagger(app);
 
 app.use("/api/v1", eventRoutes);
 
