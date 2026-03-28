@@ -6,7 +6,7 @@ import { eventSchemas } from "../validations/eventSchemas";
 const router = express.Router();
 
 /**
-* @openapi
+ * @openapi
  * /health:
  *   get:
  *     summary: Check API health status
@@ -16,11 +16,12 @@ const router = express.Router();
  *         description: API is running properly
  *         content:
  *           application/json:
- *             schema: *               type: object
+ *             schema:
+ *               type: object
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "Ok"
+ *                   example: "OK"
  *                 uptime:
  *                   type: number
  *                   description: Server uptime in seconds
@@ -58,15 +59,7 @@ router.get("/health",
  *                     $ref: '#/components/schemas/Event'
  *       500:
  *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to fetch events"
- */    
+ */
 // GET - all events
 router.get("/events",
     validateRequest(eventSchemas.list),
@@ -87,7 +80,7 @@ router.get("/events",
  *           type: string
  *           pattern: '^evt_\d{6}$'
  *           example: "evt_000001"
- *         description: The unique identifier of the event (format: evt_######)
+ *         description: "The unique identifier of the event (format: evt_######)"
  *     responses:
  *       200:
  *         description: Event retrieved successfully
@@ -98,7 +91,7 @@ router.get("/events",
  *               properties:
  *                 event:
  *                   $ref: '#/components/schemas/Event'
- *        404:
+ *       404:
  *         description: Event not found
  *         content:
  *           application/json:
@@ -110,16 +103,8 @@ router.get("/events",
  *                   example: "Event not found"
  *       500:
  *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to fetch event evt_000001"
  */
-//GET - event by id
+// GET - event by id
 router.get("/events/:id",
     validateRequest(eventSchemas.getById),
     eventController.getEventByIdHandler
@@ -139,8 +124,8 @@ router.get("/events/:id",
  *             type: object
  *             required:
  *               - name
- *               - description
  *               - date
+ *               - capacity
  *             properties:
  *               name:
  *                 type: string
@@ -154,8 +139,8 @@ router.get("/events/:id",
  *                 maxLength: 500
  *                 description: Detailed event description
  *                 example: "Annual technology conference with industry experts"
- *               date: 
- *                  type: string
+ *               date:
+ *                 type: string
  *                 format: date-time
  *                 description: Event date and time
  *                 example: "2026-12-15T14:00:00Z"
@@ -196,18 +181,10 @@ router.get("/events/:id",
  *                   example: "evt_000001"
  *       400:
  *         description: Validation error - Invalid input data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to create event"
  *       500:
  *         description: Server error
  */
-//POST - create event
+// POST - create event
 router.post("/events",
     validateRequest(eventSchemas.create),
     eventController.createEventHandler
@@ -242,7 +219,7 @@ router.post("/events",
  *                 description: Updated event name
  *                 example: "Updated Tech Conference 2026"
  *               description:
- *                  type: string
+ *                 type: string
  *                 minLength: 10
  *                 maxLength: 500
  *                 description: Updated event description
@@ -285,28 +262,12 @@ router.post("/events",
  *                   example: "evt_000001"
  *       400:
  *         description: Validation error - Invalid input data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to update event evt_000001"
  *       404:
  *         description: Event not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Event not found"
  *       500:
  *         description: Server error
  */
-// PUT - update event 
+// PUT - update event
 router.put("/events/:id",
     validateRequest(eventSchemas.update),
     eventController.updateEventHandler
@@ -342,7 +303,7 @@ router.put("/events/:id",
  *                   type: string
  *                   example: "evt_000001"
  *       404:
- *          description: Event not found
+ *         description: Event not found
  *         content:
  *           application/json:
  *             schema:
@@ -353,14 +314,6 @@ router.put("/events/:id",
  *                   example: "Event not found"
  *       500:
  *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to delete event evt_000001"
  */
 // DELETE - remove event
 router.delete("/events/:id",
