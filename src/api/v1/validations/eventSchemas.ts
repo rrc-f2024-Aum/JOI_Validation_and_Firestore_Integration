@@ -51,7 +51,7 @@ import Joi from "joi";
  *         description:
  *           type: string
  *           description: Detailed event description
- *           example: "Join us for a day of learning and networking"
+ *           example: "Join us for networking"
  *         location:
  *           type: string
  *           description: Event location/venue
@@ -84,7 +84,7 @@ import Joi from "joi";
  *           items:
  *             type: object
  *             properties:
- *                field:
+ *               field:
  *                 type: string
  *                 description: Field that caused the error
  *                 example: "email"
