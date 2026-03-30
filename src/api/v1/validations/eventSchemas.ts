@@ -1,7 +1,114 @@
 import Joi from "joi";
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Event:
+ *       type: object
+ *       required:
+ *         - name
+ *         - date
+ *         - capacity
+ *       properties:
+ *         id:
+ *           type: string
+ *           pattern: '^evt_\d{6}$'
+ *           description: Unique event identifier
+ *           example: "evt_000001"
+ *         name:
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 100
+ *           description: Event name/title
+ *           example: "Annual Tech Conference"
+ *         date:
+ *           type: string
+ *           format: date-time
+ *           description: Event date and time (must be in future)
+ *           example: "2026-12-15T14:00:00Z"
+ *         capacity:
+ *           type: integer
+ *           minimum: 5
+ *           description: Maximum number of attendees
+ *           example: 100
+ *         registrationCount:
+ *           type: integer
+ *           minimum: 0
+ *           description: Current number of registered attendees (defaults to 0)
+ *           example: 45
+ *         status:
+ *           type: string
+ *           enum: [active, cancelled, completed]
+ *           default: active
+ *           description: Current event status
+ *           example: "active"
+ *         category:
+ *           type: string
+ *           enum: [conference, workshop, meetup, seminar, general]
+ *           default: general
+ *           description: Event category
+ *           example: "conference"
+ *         description:
+ *           type: string
+ *           description: Detailed event description
+ *           example: "Join us for networking"
+ *         location:
+ *           type: string
+ *           description: Event location/venue
+ *           example: "Winnipeg Convention Centre"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the event was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the event was last updated
+ *     
+ *     Error:
+ *       type: object
+ *       required:
+ *         - error
+ *         - message
+ *       properties:
+ *         error:
+ *           type: string
+ *           description: Error type or code
+ *           example: "VALIDATION_ERROR"
+ *         message:
+ *           type: string
+ *           description: Human-readable error message
+ *           example: "Validation failed"
+ *         details:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               field:
+ *                 type: string
+ *                 description: Field that caused the error
+ *                 example: "email"
+ *               issue:
+ *                 type: string
+ *                 description: Specific validation issue
+ *                 example: "must be a valid email address"
+ *           description: Detailed validation errors
+ *     
+ *     PaginatedEvents:
+ *       type: object
+ *       properties:
+ *         events:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Event'
+ *         total:
+ *           type: integer
+ *           description: Total number of events
+ *           example: 25   
+ */
 
 export const eventSchemas = {
-    
+
     // POST - create new event
     create: {
         body: Joi.object({
@@ -31,8 +138,8 @@ export const eventSchemas = {
                     'number.integer': '"registrationCount" must be a integer',
                     'number.min': '"registrationCount" must be greater than or equal to 0',
                     'number.max': '"registrationCount" must be less than or equal to ref:capacity'
-            }),
-            
+                }),
+
             status: Joi.string().valid('active', 'cancelled', 'completed').optional().messages({
                 'any.only': '"status" must be one of [active, cancelled, completed]'
             }),
@@ -40,13 +147,13 @@ export const eventSchemas = {
             category: Joi.string().valid('conference', 'workshop', 'meetup', 'seminar', 'general')
                 .optional().messages({
                     'any.optional': '"category" must be one of [conference, workshop, meetup, seminar, general]'
-            }),
+                }),
 
             description: Joi.string().optional().allow(''),
             location: Joi.string().optional().allow('')
 
         })
-    },   
+    },
 
     // GET - single event by id
     getById: {
@@ -56,7 +163,7 @@ export const eventSchemas = {
                 'any.required': '"id" is required'
             })
         })
-    },  
+    },
 
     // PUT - update event by id
     update: {
@@ -90,7 +197,7 @@ export const eventSchemas = {
                     'number.integer': '"registrationCount" must be a integer',
                     'number.min': '"registrationCount" must be greater than or equal to 0',
                     'number.max': '"registrationCount" must be less than or equal to capacity'
-            }),
+                }),
 
             status: Joi.string().valid('active', 'cancelled', 'completed').optional().messages({
                 'any.only': '"status" must be one of [active, cancelled, completed]'
@@ -99,7 +206,7 @@ export const eventSchemas = {
             category: Joi.string().valid('conference', 'workshop', 'meetup', 'seminar', 'general')
                 .optional().messages({
                     'any.optional': '"category" must be one of [conference, workshop, meetup, seminar, general]'
-            }),
+                }),
 
             description: Joi.string().optional().allow(''),
             location: Joi.string().optional().allow('')

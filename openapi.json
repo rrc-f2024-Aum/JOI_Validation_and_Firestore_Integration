@@ -1,0 +1,579 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Event Management API Documentation",
+    "version": "1.0.0",
+    "description": "API documentation for the Event Management application with CRUD operations."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "required": [
+          "name",
+          "date",
+          "capacity"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^evt_\\d{6}$",
+            "description": "Unique event identifier",
+            "example": "evt_000001"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "description": "Event name/title",
+            "example": "Annual Tech Conference"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event date and time (must be in future)",
+            "example": "2026-12-15T14:00:00Z"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 5,
+            "description": "Maximum number of attendees",
+            "example": 100
+          },
+          "registrationCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current number of registered attendees (defaults to 0)",
+            "example": 45
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "cancelled",
+              "completed"
+            ],
+            "default": "active",
+            "description": "Current event status",
+            "example": "active"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "conference",
+              "workshop",
+              "meetup",
+              "seminar",
+              "general"
+            ],
+            "default": "general",
+            "description": "Event category",
+            "example": "conference"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed event description",
+            "example": "Join us for networking"
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location/venue",
+            "example": "Winnipeg Convention Centre"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the event was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the event was last updated"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error type or code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Field that caused the error",
+                  "example": "email"
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "Specific validation issue",
+                  "example": "must be a valid email address"
+                }
+              }
+            },
+            "description": "Detailed validation errors"
+          }
+        }
+      },
+      "PaginatedEvents": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of events",
+            "example": 25
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Check API health status",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "API is running properly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "uptime": {
+                      "type": "number",
+                      "description": "Server uptime in seconds",
+                      "example": 123.45
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "summary": "Retrieve a list of all events",
+        "tags": [
+          "Events"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of events retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Event"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new event",
+        "tags": [
+          "Events"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "date",
+                  "capacity"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 100,
+                    "description": "Event name",
+                    "example": "Tech Conference 2026"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 500,
+                    "description": "Detailed event description",
+                    "example": "Annual technology conference with industry experts"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Event date and time",
+                    "example": "2026-12-15T14:00:00Z"
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Event location",
+                    "example": "Convention Center, Winnipeg"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Maximum number of attendees",
+                    "example": 100
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Event category",
+                    "enum": [
+                      "general",
+                      "conference",
+                      "workshop",
+                      "meetup"
+                    ],
+                    "default": "general",
+                    "example": "conference"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Event status",
+                    "enum": [
+                      "active",
+                      "cancelled",
+                      "completed"
+                    ],
+                    "default": "active",
+                    "example": "active"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Event created successfully"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "evt_000001"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - Invalid input data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "summary": "Retrieve a specific event by ID",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^evt_\\d{6}$",
+              "example": "evt_000001"
+            },
+            "description": "The unique identifier of the event (format: evt_######)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "event": {
+                      "$ref": "#/components/schemas/Event"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Event not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing event",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^evt_\\d{6}$",
+              "example": "evt_000001"
+            },
+            "description": "The unique identifier of the event to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 100,
+                    "description": "Updated event name",
+                    "example": "Updated Tech Conference 2026"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 500,
+                    "description": "Updated event description",
+                    "example": "Updated description for the conference"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Updated event date",
+                    "example": "2026-12-16T14:00:00Z"
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Updated location",
+                    "example": "New Convention Center"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Updated capacity",
+                    "example": 150
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Updated category",
+                    "enum": [
+                      "general",
+                      "conference",
+                      "workshop",
+                      "meetup"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Updated status",
+                    "enum": [
+                      "active",
+                      "cancelled",
+                      "completed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Event updated successfully"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "evt_000001"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - Invalid input data"
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an event by ID",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^evt_\\d{6}$",
+              "example": "evt_000001"
+            },
+            "description": "The unique identifier of the event to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Event deleted successfully"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "evt_000001"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Event not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

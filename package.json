@@ -11,7 +11,8 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "generate-docs": "ts-node scripts/generate-openapi.ts && npx @redocly/cli build-docs openapi.json --output docs/index.html"
   },
   "repository": {
     "type": "git",
@@ -25,10 +26,14 @@
   },
   "homepage": "https://github.com/rrc-f2024-Aum/JOI_Validation_and_Firestore_Integration#readme",
   "devDependencies": {
+    "@redocly/cli": "^2.25.2",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.0",
     "@types/supertest": "6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^30.2.0",
     "supertest": "7.2.2",
     "ts-jest": "^29.4.6",
@@ -36,10 +41,15 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.6.1",
+    "helmet": "^8.1.0",
     "joi": "^18.0.2",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
