@@ -42,12 +42,25 @@ const getFirebaseConfig = (): AppOptions => {
         );
     }
 
+    let privateKey = FIREBASE_PRIVATE_KEY;
+    privateKey = privateKey.replace(/^"|"$/g, '');
+    
+    // Replace escaped newlines with actual newlines
+    // The key might have either \\n or \n in the string
+    privateKey = privateKey.replace(/\\n/g, '\n');
+    
+    // Ensure the key has proper formatting
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+        console.error('Invalid private key format. Key should start with -----BEGIN PRIVATE KEY-----');
+        throw new Error('Invalid Firebase private key format');
+    }
+    
     // Create a service account object with the provided credentials
     const serviceAccount: ServiceAccount = {
         projectId: FIREBASE_PROJECT_ID,
         clientEmail: FIREBASE_CLIENT_EMAIL,
         // Replace escaped newlines in the private key string with actual newlines
-        privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        privateKey: privateKey,
     };
 
     // Return the app configuration with credentials
